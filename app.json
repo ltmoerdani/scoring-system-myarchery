@@ -14,10 +14,6 @@
       "bundleIdentifier": "com.myarchery.scoring"
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#6366F1"
-      },
       "package": "com.myarchery.scoring"
     },
     "web": {

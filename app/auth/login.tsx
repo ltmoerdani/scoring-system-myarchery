@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   View, 
   StyleSheet, 
-  Dimensions, 
   KeyboardAvoidingView, 
   Platform,
   ScrollView,
@@ -14,11 +13,10 @@ import {
   Input, 
   Button, 
   CheckBox,
-  Divider
+  TextProps
 } from '@ui-kitten/components';
-import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Eye, EyeOff, Target } from 'lucide-react-native';
+import { Eye, EyeOff, Target, Mail } from 'lucide-react-native';
 import { Link, router } from 'expo-router';
 
 export default function LoginScreen() {
@@ -52,53 +50,56 @@ export default function LoginScreen() {
   const renderPasswordIcon = (props: any) => (
     <View style={styles.iconContainer}>
       {secureTextEntry ? (
-        <EyeOff {...props} size={20} color="#8F9BB3" />
+        <EyeOff {...props} size={20} color="#8F9BB3" onPress={toggleSecureEntry} />
       ) : (
-        <Eye {...props} size={20} color="#8F9BB3" />
+        <Eye {...props} size={20} color="#8F9BB3" onPress={toggleSecureEntry} />
       )}
     </View>
   );
 
-  // Calculate responsive form width
-  const getFormWidth = () => {
-    if (isDesktop) return Math.min(420, width * 0.35);
-    if (isLargeTablet) return Math.min(400, width * 0.5);
-    if (isTablet) return Math.min(380, width * 0.65);
-    if (isSmallTablet) return Math.min(360, width * 0.8);
-    return width - 32; // Mobile: full width with padding
-  };
+  const renderEmailIcon = (props: any) => (
+    <View style={styles.iconContainer}>
+      <Mail {...props} size={20} color="#8F9BB3" />
+    </View>
+  );
 
+  // Calculate responsive dimensions
   const getResponsiveDimensions = () => {
     if (isSmallPhone) {
       return {
         containerPadding: 16,
-        formPadding: 24,
-        logoSize: 45,
-        logoContainer: 80,
-        headerHeight: 160,
+        cardPadding: 24,
+        logoSize: 50,
+        maxWidth: width - 32,
         fontSize: {
-          header: 22,
+          header: 24,
+          subtitle: 14,
           label: 14,
-          input: 15,
+          input: 16,
           button: 16,
-          link: 13
+          link: 14
         },
         spacing: {
           small: 8,
           medium: 16,
           large: 24,
           xlarge: 32
-        }
+        },
+        inputHeight: 48,
+        buttonHeight: 48,
+        borderRadius: 8,
+        showSubtitle: false,
+        useCard: false
       };
     } else if (isMediumPhone) {
       return {
         containerPadding: 20,
-        formPadding: 28,
-        logoSize: 50,
-        logoContainer: 85,
-        headerHeight: 170,
+        cardPadding: 32,
+        logoSize: 60,
+        maxWidth: width - 40,
         fontSize: {
-          header: 24,
+          header: 28,
+          subtitle: 16,
           label: 15,
           input: 16,
           button: 16,
@@ -106,94 +107,119 @@ export default function LoginScreen() {
         },
         spacing: {
           small: 10,
-          medium: 18,
+          medium: 20,
           large: 28,
           xlarge: 36
-        }
+        },
+        inputHeight: 52,
+        buttonHeight: 52,
+        borderRadius: 8,
+        showSubtitle: true,
+        useCard: false
       };
     } else if (isSmallTablet) {
       return {
-        containerPadding: 24,
-        formPadding: 32,
-        logoSize: 55,
-        logoContainer: 90,
-        headerHeight: 180,
+        containerPadding: 32,
+        cardPadding: 40,
+        logoSize: 80,
+        maxWidth: 400,
         fontSize: {
-          header: 26,
+          header: 32,
+          subtitle: 18,
           label: 16,
-          input: 16,
-          button: 17,
-          link: 14
+          input: 18,
+          button: 18,
+          link: 16
         },
         spacing: {
           small: 12,
-          medium: 20,
+          medium: 24,
           large: 32,
           xlarge: 40
-        }
+        },
+        inputHeight: 56,
+        buttonHeight: 56,
+        borderRadius: 8,
+        showSubtitle: true,
+        useCard: true
       };
     } else if (isTablet) {
       return {
-        containerPadding: 32,
-        formPadding: 36,
-        logoSize: 60,
-        logoContainer: 95,
-        headerHeight: 190,
+        containerPadding: 48,
+        cardPadding: 48,
+        logoSize: 100,
+        maxWidth: 500,
         fontSize: {
-          header: 28,
-          label: 17,
-          input: 17,
+          header: 32,
+          subtitle: 18,
+          label: 18,
+          input: 18,
           button: 18,
-          link: 15
+          link: 16
         },
         spacing: {
           small: 14,
-          medium: 24,
+          medium: 28,
           large: 36,
           xlarge: 44
-        }
+        },
+        inputHeight: 60,
+        buttonHeight: 60,
+        borderRadius: 8,
+        showSubtitle: true,
+        useCard: true
       };
     } else if (isLargeTablet) {
       return {
-        containerPadding: 40,
-        formPadding: 40,
-        logoSize: 65,
-        logoContainer: 100,
-        headerHeight: 200,
+        containerPadding: 64,
+        cardPadding: 64,
+        logoSize: 120,
+        maxWidth: 600,
         fontSize: {
-          header: 30,
+          header: 32,
+          subtitle: 18,
           label: 18,
           input: 18,
-          button: 19,
+          button: 18,
           link: 16
         },
         spacing: {
           small: 16,
-          medium: 28,
+          medium: 32,
           large: 40,
           xlarge: 48
-        }
+        },
+        inputHeight: 64,
+        buttonHeight: 64,
+        borderRadius: 8,
+        showSubtitle: true,
+        useCard: true
       };
     } else {
       return {
-        containerPadding: 48,
-        formPadding: 44,
-        logoSize: 70,
-        logoContainer: 105,
-        headerHeight: 210,
+        containerPadding: 80,
+        cardPadding: 80,
+        logoSize: 140,
+        maxWidth: 650,
         fontSize: {
           header: 32,
-          label: 19,
-          input: 19,
-          button: 20,
-          link: 17
+          subtitle: 18,
+          label: 18,
+          input: 18,
+          button: 18,
+          link: 16
         },
         spacing: {
           small: 18,
-          medium: 32,
+          medium: 36,
           large: 44,
           xlarge: 52
-        }
+        },
+        inputHeight: 64,
+        buttonHeight: 64,
+        borderRadius: 8,
+        showSubtitle: true,
+        useCard: true
       };
     }
   };
@@ -210,35 +236,21 @@ export default function LoginScreen() {
       justifyContent: 'center',
       alignItems: 'center',
       paddingVertical: dimensions.spacing.large,
+      paddingHorizontal: dimensions.containerPadding,
     },
     contentWrapper: {
-      width: getFormWidth(),
-      maxWidth: 420,
-    },
-    header: {
-      height: dimensions.headerHeight,
-      borderRadius: 16,
-      justifyContent: 'center',
+      width: '100%',
+      maxWidth: dimensions.maxWidth,
       alignItems: 'center',
-      marginBottom: dimensions.spacing.large,
-      position: 'relative',
-    },
-    headerTitle: {
-      fontSize: dimensions.fontSize.header,
-      fontWeight: '700',
-      color: '#FFFFFF',
-      textAlign: 'center',
     },
     logoContainer: {
-      position: 'absolute',
-      bottom: -dimensions.logoContainer / 2,
-      alignSelf: 'center',
-      zIndex: 10,
+      marginBottom: dimensions.spacing.large,
+      alignItems: 'center',
     },
     logoWrapper: {
-      width: dimensions.logoContainer,
-      height: dimensions.logoContainer,
-      borderRadius: dimensions.logoContainer / 2,
+      width: dimensions.logoSize + 20,
+      height: dimensions.logoSize + 20,
+      borderRadius: (dimensions.logoSize + 20) / 2,
       backgroundColor: '#FFFFFF',
       alignItems: 'center',
       justifyContent: 'center',
@@ -248,25 +260,39 @@ export default function LoginScreen() {
         height: 4,
       },
       shadowOpacity: 0.15,
-      shadowRadius: 12,
+      shadowRadius: 8,
       elevation: 8,
+      marginBottom: dimensions.spacing.medium,
     },
-    formContainer: {
-      backgroundColor: 'transparent',
-      marginTop: dimensions.logoContainer / 2 + dimensions.spacing.medium,
+    welcomeText: {
+      fontSize: dimensions.fontSize.header,
+      fontWeight: '700',
+      color: '#222B45',
+      textAlign: 'center',
+      marginBottom: dimensions.spacing.small,
     },
-    form: {
+    subtitleText: {
+      fontSize: dimensions.fontSize.subtitle,
+      color: '#8F9BB3',
+      textAlign: 'center',
+      lineHeight: dimensions.fontSize.subtitle * 1.4,
+      display: dimensions.showSubtitle ? 'flex' : 'none',
+    },
+    formCard: {
+      width: '100%',
       backgroundColor: '#FFFFFF',
       borderRadius: 16,
-      padding: dimensions.formPadding,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.08,
-      shadowRadius: 16,
-      elevation: 6,
+      padding: dimensions.cardPadding,
+      ...(dimensions.useCard && {
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 4,
+        },
+        shadowOpacity: isTablet ? 0.15 : 0.1,
+        shadowRadius: 12,
+        elevation: 8,
+      }),
     },
     inputLabel: {
       fontSize: dimensions.fontSize.label,
@@ -279,62 +305,53 @@ export default function LoginScreen() {
       marginTop: 0,
     },
     input: {
+      height: dimensions.inputHeight,
+      borderRadius: dimensions.borderRadius,
       marginBottom: dimensions.spacing.small,
-      borderRadius: 8,
-      minHeight: isSmallPhone ? 44 : 48,
     },
     inputText: {
       fontSize: dimensions.fontSize.input,
     },
     optionsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
       marginTop: dimensions.spacing.medium,
       marginBottom: dimensions.spacing.large,
     },
-    checkbox: {
-      marginTop: dimensions.spacing.small,
+    checkboxContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
     },
     checkboxText: {
-      fontSize: dimensions.fontSize.input - 1,
+      fontSize: dimensions.fontSize.link,
       color: '#8F9BB3',
       marginLeft: dimensions.spacing.small,
+    },
+    forgotPasswordText: {
+      fontSize: dimensions.fontSize.link,
+      color: '#6366F1',
+      fontWeight: '600',
     },
     loginButton: {
       backgroundColor: '#6366F1',
       borderColor: '#6366F1',
-      borderRadius: 8,
-      paddingVertical: isSmallPhone ? 14 : 16,
+      borderRadius: dimensions.borderRadius,
+      height: dimensions.buttonHeight,
       marginBottom: dimensions.spacing.large,
-      minHeight: isSmallPhone ? 44 : 48,
+      width: isDesktop ? '60%' : isLargeTablet ? '70%' : isTablet ? '80%' : '100%',
+      alignSelf: 'center',
     },
     loginButtonText: {
       fontSize: dimensions.fontSize.button,
       fontWeight: '600',
       color: '#FFFFFF',
     },
-    forgotPasswordContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: dimensions.spacing.large,
-    },
-    forgotPasswordIcon: {
-      fontSize: dimensions.fontSize.input,
-      marginRight: dimensions.spacing.small,
-    },
-    forgotPassword: {
-      fontSize: dimensions.fontSize.link,
-      color: '#8F9BB3',
-      textAlign: 'center',
-    },
-    divider: {
-      marginVertical: dimensions.spacing.large,
-      backgroundColor: '#EDF1F7',
-    },
     signupContainer: {
       flexDirection: isSmallPhone ? 'column' : 'row',
       justifyContent: 'center',
       alignItems: 'center',
-      gap: isSmallPhone ? 4 : 0,
+      gap: isSmallPhone ? 4 : 8,
     },
     signupText: {
       fontSize: dimensions.fontSize.link,
@@ -361,98 +378,100 @@ export default function LoginScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={responsiveStyles.contentWrapper}>
-            {/* Header with gradient and logo */}
-            <LinearGradient
-              colors={['#6366F1', '#8B5CF6']}
-              style={responsiveStyles.header}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <Text style={responsiveStyles.headerTitle}>Masuk MyArchery.id</Text>
-              
-              {/* Logo positioned at bottom of header */}
-              <View style={responsiveStyles.logoContainer}>
-                <View style={responsiveStyles.logoWrapper}>
-                  <Target size={dimensions.logoSize} color="#6366F1" strokeWidth={2} />
-                </View>
+            {/* Logo and Welcome Section */}
+            <View style={responsiveStyles.logoContainer}>
+              <View style={responsiveStyles.logoWrapper}>
+                <Target size={dimensions.logoSize} color="#6366F1" strokeWidth={2} />
               </View>
-            </LinearGradient>
+              
+              <Text style={responsiveStyles.welcomeText}>
+                Selamat Datang
+              </Text>
+              
+              {dimensions.showSubtitle && (
+                <Text style={responsiveStyles.subtitleText}>
+                  Silakan Masuk Ke{'\n'}Akun Anda
+                </Text>
+              )}
+            </View>
 
             {/* Login Form */}
-            <Layout style={responsiveStyles.formContainer}>
-              <View style={responsiveStyles.form}>
-                <Text style={[responsiveStyles.inputLabel, responsiveStyles.firstInputLabel]}>Email</Text>
-                <Input
-                  placeholder="Enter email"
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoComplete="email"
-                  style={responsiveStyles.input}
-                  textStyle={responsiveStyles.inputText}
-                  size="large"
-                />
+            <View style={responsiveStyles.formCard}>
+              <Text style={[responsiveStyles.inputLabel, responsiveStyles.firstInputLabel]}>
+                Email
+              </Text>
+              <Input
+                placeholder="Masukkan email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+                style={responsiveStyles.input}
+                textStyle={responsiveStyles.inputText}
+                size="large"
+                accessoryRight={renderEmailIcon}
+              />
 
-                <Text style={responsiveStyles.inputLabel}>Password</Text>
-                <Input
-                  placeholder="Enter Password"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={secureTextEntry}
-                  accessoryRight={renderPasswordIcon}
-                  onAccessoryPress={toggleSecureEntry}
-                  style={responsiveStyles.input}
-                  textStyle={responsiveStyles.inputText}
-                  size="large"
-                />
+              <Text style={responsiveStyles.inputLabel}>
+                Password
+              </Text>
+              <Input
+                placeholder="Masukkan password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={secureTextEntry}
+                accessoryRight={renderPasswordIcon}
+                style={responsiveStyles.input}
+                textStyle={responsiveStyles.inputText}
+                size="large"
+              />
 
-                <View style={responsiveStyles.optionsContainer}>
+              <View style={responsiveStyles.optionsContainer}>
+                <View style={responsiveStyles.checkboxContainer}>
                   <CheckBox
                     checked={rememberMe}
                     onChange={setRememberMe}
-                    style={responsiveStyles.checkbox}
+                    status="control"
                   >
-                    {evaProps => (
+                    {(evaProps: TextProps) => (
                       <Text {...evaProps} style={responsiveStyles.checkboxText}>
-                        Remember me
+                        Ingat saya
                       </Text>
                     )}
                   </CheckBox>
                 </View>
-
-                <Button
-                  style={responsiveStyles.loginButton}
-                  size="large"
-                  onPress={handleLogin}
-                  disabled={loading}
+                
+                <Text
+                  style={responsiveStyles.forgotPasswordText}
+                  onPress={() => router.push('/auth/forgot-password')}
                 >
-                  {evaProps => (
-                    <Text {...evaProps} style={responsiveStyles.loginButtonText}>
-                      {loading ? 'Masuk...' : 'Masuk'}
-                    </Text>
-                  )}
-                </Button>
-
-                <View style={responsiveStyles.forgotPasswordContainer}>
-                  <Text style={responsiveStyles.forgotPasswordIcon}>🔒</Text>
-                  <Text style={responsiveStyles.forgotPassword}>
-                    Forgot your password?
-                  </Text>
-                </View>
-
-                <Divider style={responsiveStyles.divider} />
-
-                <View style={responsiveStyles.signupContainer}>
-                  <Text style={responsiveStyles.signupText}>
-                    Don't have an account?{isSmallPhone ? '\n' : ' '}
-                  </Text>
-                  <Link href="/auth/register" asChild>
-                    <Text style={responsiveStyles.signupLink}>Signup now</Text>
-                  </Link>
-                </View>
+                  Lupa Password?
+                </Text>
               </View>
-            </Layout>
+
+              <Button
+                style={responsiveStyles.loginButton}
+                size="large"
+                onPress={handleLogin}
+                disabled={loading}
+              >
+                {(evaProps: TextProps) => (
+                  <Text {...evaProps} style={responsiveStyles.loginButtonText}>
+                    {loading ? 'Masuk...' : 'MASUK'}
+                  </Text>
+                )}
+              </Button>
+
+              <View style={responsiveStyles.signupContainer}>
+                <Text style={responsiveStyles.signupText}>
+                  Belum punya akun?{isSmallPhone ? '\n' : ' '}
+                </Text>
+                <Link href="/auth/register" asChild>
+                  <Text style={responsiveStyles.signupLink}>Daftar Disini</Text>
+                </Link>
+              </View>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
